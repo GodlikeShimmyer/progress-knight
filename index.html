@@ -293,10 +293,52 @@
             </div>
         </div>
     </div>
+    // Fast Forward
+var ffSpeed = 1;
+
+function setFFSpeed(speed) {
+  ffSpeed = speed;
+  gameSpeed = speed;
+  document.getElementById("ffSpeedDisplay").textContent = speed + "x";
+
+  // Update active button highlight
+  var ids = ["ffBtn1", "ffBtn2", "ffBtn5", "ffBtn10", "ffBtn25"];
+  var targets = [1, 2, 5, 10, 25];
+  for (var i = 0; i < ids.length; i++) {
+    var btn = document.getElementById(ids[i]);
+    if (btn) {
+      if (targets[i] === speed) {
+        btn.classList.add("ff-active");
+      } else {
+        btn.classList.remove("ff-active");
+      }
+    }
+  }
+}
+
+function applyFFCustom() {
+  var input = document.getElementById("ffCustomInput");
+  var val = parseFloat(input.value);
+  if (isNaN(val) || val < 1) {
+    alert("Please enter a number of 1 or greater.");
+    return;
+  }
+  // Remove active from all preset buttons since this is custom
+  var ids = ["ffBtn1", "ffBtn2", "ffBtn5", "ffBtn10", "ffBtn25"];
+  for (var i = 0; i < ids.length; i++) {
+    var btn = document.getElementById(ids[i]);
+    if (btn) btn.classList.remove("ff-active");
+  }
+  ffSpeed = val;
+  gameSpeed = val;
+  document.getElementById("ffSpeedDisplay").textContent = val + "x";
+  input.value = "";
+}
 </body>
 
 <script type="text/javascript" src="js/HackTimer.js"></script>
 <script type="text/javascript" src="js/classes.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+
 
 </html>
