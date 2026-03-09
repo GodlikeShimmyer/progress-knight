@@ -30,6 +30,8 @@ const baseLifespan = 365 * 70
 
 const baseGameSpeed = 4
 
+var ffMultiplier = 1
+
 const permanentUnlocks = ["Scheduling", "Shop", "Automation", "Quick task display"]
 
 const jobBaseData = {
@@ -325,7 +327,7 @@ function getEvilGain() {
 function getGameSpeed() {
     var timeWarping = gameData.taskData["Time warping"]
     var timeWarpingSpeed = gameData.timeWarpingEnabled ? timeWarping.getEffect() : 1
-    var gameSpeed = baseGameSpeed * +!gameData.paused * +isAlive() * timeWarpingSpeed
+    var gameSpeed = baseGameSpeed * +!gameData.paused * +isAlive() * timeWarpingSpeed * ffMultiplier
     return gameSpeed
 }
 
@@ -1020,6 +1022,40 @@ function update() {
     updateUI()
 }
 
+// ===== FAST FORWARD =====
+
+function setFFSpeed(speed) {
+    ffMultiplier = speed
+    document.getElementById("ffSpeedDisplay").textContent = speed + "x"
+    var presets = [1, 2, 5, 10, 25]
+    presets.forEach(function(p) {
+        var btn = document.getElementById("ffBtn" + p)
+        if (btn) {
+            if (p === speed) {
+                btn.classList.add("w3-blue-gray")
+            } else {
+                btn.classList.remove("w3-blue-gray")
+            }
+        }
+    })
+}
+
+function applyFFCustom() {
+    var input = document.getElementById("ffCustomInput")
+    var val = parseFloat(input.value)
+    if (isNaN(val) || val < 1) return
+    ffMultiplier = val
+    document.getElementById("ffSpeedDisplay").textContent = val + "x"
+    var presets = [1, 2, 5, 10, 25]
+    presets.forEach(function(p) {
+        var btn = document.getElementById("ffBtn" + p)
+        if (btn) btn.classList.remove("w3-blue-gray")
+    })
+    input.value = ""
+}
+
+// ===== END FAST FORWARD =====
+
 function resetGameData() {
     localStorage.clear()
     location.reload()
@@ -1155,4 +1191,5 @@ setTab(jobTabButton, "jobs")
 update()
 setInterval(update, 1000 / updateSpeed)
 setInterval(saveGameData, 3000)
+
 setInterval(setSkillWithLowestMaxXp, 1000)
